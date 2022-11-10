@@ -121,7 +121,14 @@ object WatchQueryBuilder {
       boundedStreamF(1).translate(transform)
 
     def updateStream[A: BsonDecoder] =
-      boundedStreamF(1).map(_.getFullDocument).evalMap(_.as[A].liftTo[F]).translate(transform)
+      boundedStreamF(1)
+        .map(_.getFullDocument)
+        .map(_.as[A])
+        .flatMap {
+          case Right(doc) => Stream.emit(doc)
+          case Left(_)    => Stream.empty
+        }
+        .translate(transform)
 
     //
     def mapK[H[_]](f: G ~> H) =
