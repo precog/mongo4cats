@@ -25,6 +25,7 @@ object Dependencies {
     val findbugsJsr305Version = "com.google.code.findbugs" % "jsr305" % Versions.findbugsJsr305Version % Provided
 
     val fs2Core     = "co.fs2"                 %% "fs2-core"                % Versions.fs2
+    val fs2IO     = "co.fs2"                 %% "fs2-io"                % Versions.fs2
     val fs2RS       = "co.fs2"                 %% "fs2-reactive-streams"    % Versions.fs2
     val scalaCompat = "org.scala-lang.modules" %% "scala-collection-compat" % Versions.scalaCompat
 
@@ -70,6 +71,7 @@ object Dependencies {
 
   lazy val embedded = Seq(
     Libraries.fs2Core,
+    Libraries.fs2IO,
     Libraries.fs2RS,
     Libraries.embeddedMongo,
     Libraries.immutableValue,

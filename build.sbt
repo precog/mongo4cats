@@ -50,6 +50,7 @@ lazy val commonSettings = Seq(
   resolvers += "Apache public" at "https://repository.apache.org/content/groups/public/",
   scalafmtOnCompile  := true,
   crossScalaVersions := supportedScalaVersions,
+  scalacOptions += "-Wconf:msg=While parsing annotations in:silent",
   Compile / doc / scalacOptions ++= Seq(
     "-no-link-warnings" // Suppresses problems with Scaladoc links
   )

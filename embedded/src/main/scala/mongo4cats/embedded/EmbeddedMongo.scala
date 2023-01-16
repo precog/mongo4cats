@@ -23,8 +23,10 @@ import de.flapdoodle.embed.mongo.config.{MongodConfig, Net}
 import de.flapdoodle.embed.mongo.distribution.Version
 import de.flapdoodle.embed.mongo.{MongodProcess, MongodStarter}
 import de.flapdoodle.embed.process.runtime.Network
+import de.flapdoodle.embed.mongo.config.MongoCmdOptions
 
 import scala.concurrent.duration._
+import de.flapdoodle.embed.mongo.config.Storage
 
 object EmbeddedMongo {
 
@@ -70,11 +72,15 @@ trait EmbeddedMongo {
   private def runMongo[F[_]: Async, A](host: String, port: Int)(test: => F[A]): F[A] =
     EmbeddedMongo
       .start[F] {
-        MongodConfig
+        val config = MongodConfig
           .builder()
           .version(Version.Main.PRODUCTION)
+          .replication(new Storage(null, "rs0", 1024 * 1024 * 1024))
           .net(new Net(host, port, Network.localhostIsIPv6))
+          .cmdOptions(MongoCmdOptions.builder().useNoJournal(false).build())
           .build
+
+        config
       }
       .use(_ => test)
 }
