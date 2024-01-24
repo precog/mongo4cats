@@ -50,10 +50,10 @@ object BsonDocumentDecoder extends LowLevelDocumentDecoder {
 }
 
 trait LowLevelDocumentDecoder {
-  implicit def narrowDecoder[A: BsonDecoder] = BsonDocumentDecoder.instance[A] {
-    (b: BsonDocument) =>
+  implicit def narrowDecoder[A: BsonDecoder]: BsonDocumentDecoder[A] =
+    BsonDocumentDecoder.instance[A] { (b: BsonDocument) =>
       BsonDecoder[A].apply(b: BsonValue)
-  }
+    }
 }
 
 object BsonDecoder {

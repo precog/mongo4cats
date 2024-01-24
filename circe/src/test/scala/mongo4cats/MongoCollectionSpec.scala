@@ -34,13 +34,14 @@ import java.time.{Instant, LocalDate}
 import java.time.temporal.ChronoField.MILLI_OF_SECOND
 import java.time.temporal.ChronoUnit
 import scala.concurrent.Future
+import mongo4cats.bson.BsonDocumentEncoder
 
 class MongoCollectionSpec extends AsyncWordSpec with Matchers with EmbeddedMongo {
 
   import MongoCollectionSpec._
 
-  implicit val personEnc = unsafe.circeDocumentEncoder[Person]
-  implicit val paymentEnc = unsafe.circeDocumentEncoder[Payment]
+  implicit val personEnc: BsonDocumentEncoder[Person] = unsafe.circeDocumentEncoder[Person]
+  implicit val paymentEnc: BsonDocumentEncoder[Payment] = unsafe.circeDocumentEncoder[Payment]
 
   override val mongoPort: Int = 12348
 

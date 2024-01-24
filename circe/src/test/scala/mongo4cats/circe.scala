@@ -27,16 +27,17 @@ class CirceSpec extends AnyWordSpec with Matchers with EitherValues {
 
   "circe conversions" should {
     "decode null as if it was Json.null" in {
-      circe.implicits.circeDecoderToDecoder[Unit](Decoder.instance { c => 
-        c.value.asNull.toRight(DecodingFailure("wasn't null!", Nil))
-      }).apply(null) shouldBe Right(())
+      circe.implicits
+        .circeDecoderToDecoder[Unit](Decoder.instance { c =>
+          c.value.asNull.toRight(DecodingFailure("wasn't null!", Nil))
+        })
+        .apply(null) shouldBe Right(())
     }
 
     "not report the internal root tag in history when reporting errors" in {
 
-      val deco = Decoder.instance(h => {
-        h.get[String]("hek")(Decoder.failedWithMessage("Bad!"))
-      })
+      val deco =
+        Decoder.instance(h => h.get[String]("hek")(Decoder.failedWithMessage("Bad!")))
 
       val res = circe.implicits.circeDecoderToDecoder[String](deco).apply(new BsonString("hek"))
 
