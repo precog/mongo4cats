@@ -3,7 +3,7 @@ import sbt._
 object Dependencies {
   private object Versions {
     val mongodb     = "4.11.1"
-    val fs2         = "3.9.3"
+    val fs2         = "3.10.2"
     val scalaCompat = "2.6.0"
     val circe       = "0.14.1"
     val findbugsJsr305Version = "1.3.9"
