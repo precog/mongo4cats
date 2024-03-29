@@ -5,7 +5,7 @@ object Dependencies {
     val mongodb     = "4.11.1"
     val fs2         = "3.10.2"
     val scalaCompat = "2.6.0"
-    val circe       = "0.14.1"
+    val circe       = "0.14.6"
     val findbugsJsr305Version = "1.3.9"
 
     val logback   = "1.2.10"

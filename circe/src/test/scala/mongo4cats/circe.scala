@@ -41,7 +41,7 @@ class CirceSpec extends AnyWordSpec with Matchers with EitherValues {
 
       val res = circe.implicits.circeDecoderToDecoder[String](deco).apply(new BsonString("hek"))
 
-      res.left.value.msg shouldBe "An error occured during decoding BsonValue BsonString{value='hek'}: DecodingFailure(Attempt to decode value on failed cursor, List(DownField(hek)))"
+      res.left.value.msg shouldBe "An error occured during decoding BsonValue BsonString{value='hek'}: DecodingFailure at .hek: Missing required field"
 
     }
   }
