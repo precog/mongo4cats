@@ -24,6 +24,7 @@ import mongo4cats.circe.unsafe
 import mongo4cats.embedded.EmbeddedMongo
 
 import java.time.Instant
+import mongo4cats.bson.BsonDocumentEncoder
 
 object CaseClassesWithCirceCodecs extends IOApp.Simple with EmbeddedMongo {
 
@@ -35,8 +36,8 @@ object CaseClassesWithCirceCodecs extends IOApp.Simple with EmbeddedMongo {
       registrationDate: Instant
   )
 
-  implicit val addressEnc = unsafe.circeDocumentEncoder[Address]
-  implicit val personEnc = unsafe.circeDocumentEncoder[Person]
+  implicit val addressEnc: BsonDocumentEncoder[Address] = unsafe.circeDocumentEncoder[Address]
+  implicit val personEnc: BsonDocumentEncoder[Person] = unsafe.circeDocumentEncoder[Person]
 
   override val run: IO[Unit] =
     withRunningEmbeddedMongo("localhost", 27017) {

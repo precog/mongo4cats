@@ -2,16 +2,16 @@ import sbt._
 
 object Dependencies {
   private object Versions {
-    val mongodb     = "4.4.0"
-    val fs2         = "3.2.4"
+    val mongodb     = "4.11.1"
+    val fs2         = "3.10.2"
     val scalaCompat = "2.6.0"
-    val circe       = "0.14.1"
+    val circe       = "0.14.6"
     val findbugsJsr305Version = "1.3.9"
 
     val logback   = "1.2.10"
     val scalaTest = "3.2.10"
 
-    val testContainers = "0.39.12"
+    val testContainers = "0.40.10"
 
     val embeddedMongo   = "3.2.5"
     val immutableValue  = "2.8.8"
@@ -25,7 +25,6 @@ object Dependencies {
     val findbugsJsr305Version = "com.google.code.findbugs" % "jsr305" % Versions.findbugsJsr305Version % Provided
 
     val fs2Core     = "co.fs2"                 %% "fs2-core"                % Versions.fs2
-    val fs2RS       = "co.fs2"                 %% "fs2-reactive-streams"    % Versions.fs2
     val scalaCompat = "org.scala-lang.modules" %% "scala-collection-compat" % Versions.scalaCompat
 
     val circeCore    = "io.circe" %% "circe-core"    % Versions.circe
@@ -49,7 +48,6 @@ object Dependencies {
     Libraries.mongodbDriverStreams,
     Libraries.findbugsJsr305Version,
     Libraries.fs2Core,
-    Libraries.fs2RS,
     Libraries.scalaCompat
   )
 
@@ -70,7 +68,6 @@ object Dependencies {
 
   lazy val embedded = Seq(
     Libraries.fs2Core,
-    Libraries.fs2RS,
     Libraries.embeddedMongo,
     Libraries.immutableValue,
     Libraries.commonsCompress

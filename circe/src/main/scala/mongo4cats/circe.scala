@@ -39,7 +39,7 @@ object circe extends JsonCodecs {
   }
 
   object implicits {
-    implicit def circeEncoderToEncoder[A: Encoder] = new BsonEncoder[A] {
+    implicit def circeEncoderToEncoder[A: Encoder]: BsonEncoder[A] = new BsonEncoder[A] {
       def apply(a: A): BsonValue = {
         val json = a.asJson
         val wrapped = Json.obj(RootTag := json)
@@ -48,12 +48,14 @@ object circe extends JsonCodecs {
       }
     }
 
-    implicit def circeDecoderToDecoder[A: Decoder] = new BsonDecoder[A] {
+    implicit def circeDecoderToDecoder[A: Decoder]: BsonDecoder[A] = new BsonDecoder[A] {
+
+      val decoder = Decoder.instance[A](_.as[A])
+
       def apply(b: BsonValue) = {
         val doc = BsonDocument(RootTag -> (if (b == null) new BsonNull else b)).toJson()
         val json = parser.parse(doc)
         val jsonWithoutRoot = json.flatMap(_.hcursor.get[Json](RootTag))
-        val decoder = Decoder.instance[A](_.as[A])
         jsonWithoutRoot
           .flatMap(decoder.decodeJson(_))
           .leftMap(x =>

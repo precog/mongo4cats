@@ -18,8 +18,9 @@ package mongo4cats
 
 import cats.effect.Async
 import fs2.Stream
-import fs2.interop.reactivestreams
+import fs2.interop.flow
 import org.reactivestreams.Publisher
+import org.reactivestreams.FlowAdapters
 
 object helpers {
 
@@ -36,9 +37,9 @@ object helpers {
       boundedStream(1).compile.drain
 
     def stream[F[_]: Async]: Stream[F, T] =
-      reactivestreams.fromPublisher(publisher, DefaultStreamChunkSize)
+      flow.fromPublisher(FlowAdapters.toFlowPublisher(publisher), DefaultStreamChunkSize)
 
     def boundedStream[F[_]: Async](chunkSize: Int): Stream[F, T] =
-      reactivestreams.fromPublisher(publisher, chunkSize)
+      flow.fromPublisher(FlowAdapters.toFlowPublisher(publisher), chunkSize)
   }
 }
