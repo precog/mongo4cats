@@ -13,7 +13,7 @@ object Dependencies {
 
     val testContainers = "0.40.10"
 
-    val embeddedMongo   = "3.2.5"
+    val embeddedMongo   = "4.20.0"
     val immutableValue  = "2.8.8"
     val commonsCompress = "1.21"
   }
@@ -22,6 +22,7 @@ object Dependencies {
     val mongodbBson          = "org.mongodb" % "bson"                           % Versions.mongodb
     val mongodbDriverCore    = "org.mongodb" % "mongodb-driver-core"            % Versions.mongodb
     val mongodbDriverStreams = "org.mongodb" % "mongodb-driver-reactivestreams" % Versions.mongodb
+    val mongodbDriverSync    = "org.mongodb" % "mongodb-driver-sync"            % Versions.mongodb
     val findbugsJsr305Version = "com.google.code.findbugs" % "jsr305" % Versions.findbugsJsr305Version % Provided
 
     val fs2Core     = "co.fs2"                 %% "fs2-core"                % Versions.fs2
@@ -67,6 +68,8 @@ object Dependencies {
   )
 
   lazy val embedded = Seq(
+    Libraries.mongodbBson,
+    Libraries.mongodbDriverSync,
     Libraries.fs2Core,
     Libraries.embeddedMongo,
     Libraries.immutableValue,
