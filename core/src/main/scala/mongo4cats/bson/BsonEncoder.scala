@@ -17,6 +17,7 @@
 package mongo4cats.bson
 
 import org.bson._
+import java.time.Instant
 
 trait BsonEncoder[A] extends Serializable { self =>
   def apply(a: A): BsonValue
@@ -54,10 +55,6 @@ object BsonEncoder {
 
   implicit val reify: BsonEncoder[BsonValue] =
     instance(x => x)
-  implicit val int: BsonEncoder[Int] =
-    instance(x => new BsonInt32(x))
-  implicit val string: BsonEncoder[String] =
-    instance(x => new BsonString(x))
   implicit val bsonArray: BsonEncoder[BsonArray] =
     instance(x => x: BsonValue)
   implicit val bsonBinary: BsonEncoder[BsonBinary] =
@@ -102,4 +99,16 @@ object BsonEncoder {
     instance(x => x: BsonValue)
   implicit val bsonLong: BsonEncoder[BsonInt64] =
     instance(x => x: BsonValue)
+  implicit val int: BsonEncoder[Int] =
+    bsonInt.contramap(new BsonInt32(_))
+  implicit val long: BsonEncoder[Long] =
+    bsonLong.contramap(new BsonInt64(_))
+  implicit val string: BsonEncoder[String] =
+    bsonString.contramap(new BsonString(_))
+  implicit val boolean: BsonEncoder[Boolean] =
+    bsonBoolean.contramap(new BsonBoolean(_))
+  implicit val double: BsonEncoder[Double] =
+    bsonDouble.contramap(new BsonDouble(_))
+  implicit val instant: BsonEncoder[Instant] =
+    bsonDateTime.contramap(x => new BsonDateTime(x.toEpochMilli))
 }

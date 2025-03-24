@@ -40,7 +40,7 @@ object DistinctNestedClassesWithCirceCodecs extends IOApp.Simple with EmbeddedMo
   implicit val personEnc: BsonDocumentEncoder[Person] = unsafe.circeDocumentEncoder[Person]
 
   override val run: IO[Unit] =
-    withRunningEmbeddedMongo("localhost", 27017) {
+    withRunningEmbeddedMongo(27017) {
       MongoClient.fromConnectionString[IO]("mongodb://localhost:27017").use { client =>
         for {
           db <- client.getDatabase("testdb")

@@ -16,7 +16,7 @@ ThisBuild / sonatypeProjectHosting := Some(GitHubHosting("precog", "mongo4cats",
 ThisBuild / publishTo              := sonatypePublishToBundle.value
 ThisBuild / githubWorkflowPublishTargetBranches := Nil
 ThisBuild / githubWorkflowScalaVersions         := supportedScalaVersions
-ThisBuild / githubWorkflowJavaVersions          := Seq("amazon-corretto@1.17")
+ThisBuild / githubWorkflowJavaVersions          := Seq(JavaSpec(JavaSpec.Distribution.Corretto, "17"))
 ThisBuild / githubOwner := "precog"
 ThisBuild / githubRepository := "mongo4cats"
 

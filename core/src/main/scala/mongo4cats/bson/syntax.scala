@@ -17,6 +17,7 @@
 package mongo4cats.bson
 
 import org.bson.BsonValue
+import cats.syntax.all._
 
 trait CodecOps {
   implicit final class BsonEncoderOps[A](val value: A) {
@@ -31,10 +32,25 @@ trait CodecOps {
     def as[A: BsonDecoder]: Either[BsonDecodeError, A] = BsonDecoder[A].apply(value)
   }
 
-  implicit class BDocDecoderOps(val value: BsonDocument) {
+  implicit class BsonDocumentDecoderOps(val doc: BsonDocument) {
     def as[A: BsonDocumentDecoder]: Either[BsonDecodeError, A] =
-      BsonDocumentDecoder[A].apply(value)
+      BsonDocumentDecoder[A].apply(doc)
+
+    def getAs[A: BsonDecoder](k: String): Either[BsonDecodeError, A] =
+      if (doc.containsKey(k))
+        BsonDecoder[A]
+          .apply(doc.get(k))
+          .leftMap(err => BsonDecodeError(s"At key '$k': ${err.msg}"))
+      else BsonDecodeError(s"No key '$k' found").asLeft
+
+    def getOptional[A: BsonDecoder](k: String): Either[BsonDecodeError, Option[A]] =
+      if (doc.containsKey(k))
+        BsonDecoder[A]
+          .apply(doc.get(k))
+          .bimap(err => BsonDecodeError(s"At key '$k': ${err.msg}"), Some(_))
+      else Right(None)
   }
+
 }
 
 object syntax extends CodecOps
