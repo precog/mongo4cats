@@ -28,6 +28,12 @@ trait BsonDecoder[A] extends Serializable { self =>
     def apply(b: BsonValue): Either[BsonDecodeError, B] =
       self.apply(b).map(f)
   }
+
+  def flatMap[B](f: A => Either[BsonDecodeError, B]): BsonDecoder[B] =
+    new BsonDecoder[B] {
+      def apply(b: BsonValue): Either[BsonDecodeError, B] =
+        self.apply(b).flatMap(f)
+    }
 }
 
 trait BsonDocumentDecoder[A] extends Serializable { self =>
@@ -37,6 +43,12 @@ trait BsonDocumentDecoder[A] extends Serializable { self =>
     def apply(b: BsonDocument): Either[BsonDecodeError, B] =
       self.apply(b).map(f)
   }
+
+  def flatMap[B](f: A => Either[BsonDecodeError, B]): BsonDocumentDecoder[B] =
+    new BsonDocumentDecoder[B] {
+      def apply(b: BsonDocument): Either[BsonDecodeError, B] =
+        self.apply(b).flatMap(f)
+    }
 }
 
 object BsonDocumentDecoder extends LowLevelDocumentDecoder {
