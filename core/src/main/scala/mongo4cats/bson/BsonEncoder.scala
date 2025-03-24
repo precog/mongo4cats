@@ -55,18 +55,6 @@ object BsonEncoder {
 
   implicit val reify: BsonEncoder[BsonValue] =
     instance(x => x)
-  implicit val int: BsonEncoder[Int] =
-    instance(x => new BsonInt32(x))
-  implicit val long: BsonEncoder[Long] =
-    instance(x => new BsonInt64(x))
-  implicit val string: BsonEncoder[String] =
-    instance(x => new BsonString(x))
-  implicit val boolean: BsonEncoder[Boolean] =
-    instance(x => new BsonBoolean(x))
-  implicit val double: BsonEncoder[Double] =
-    instance(x => new BsonDouble(x))
-  implicit val instant: BsonEncoder[Instant] =
-    instance(x => new BsonDateTime(x.toEpochMilli))
   implicit val bsonArray: BsonEncoder[BsonArray] =
     instance(x => x: BsonValue)
   implicit val bsonBinary: BsonEncoder[BsonBinary] =
@@ -111,4 +99,16 @@ object BsonEncoder {
     instance(x => x: BsonValue)
   implicit val bsonLong: BsonEncoder[BsonInt64] =
     instance(x => x: BsonValue)
+  implicit val int: BsonEncoder[Int] =
+    bsonInt.contramap(new BsonInt32(_))
+  implicit val long: BsonEncoder[Long] =
+    bsonLong.contramap(new BsonInt64(_))
+  implicit val string: BsonEncoder[String] =
+    bsonString.contramap(new BsonString(_))
+  implicit val boolean: BsonEncoder[Boolean] =
+    bsonBoolean.contramap(new BsonBoolean(_))
+  implicit val double: BsonEncoder[Double] =
+    bsonDouble.contramap(new BsonDouble(_))
+  implicit val instant: BsonEncoder[Instant] =
+    bsonDateTime.contramap(x => new BsonDateTime(x.toEpochMilli))
 }

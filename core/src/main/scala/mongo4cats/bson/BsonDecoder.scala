@@ -79,36 +79,6 @@ object BsonDecoder {
   implicit val bsonDecoder: BsonDecoder[BsonValue] =
     instance[BsonValue](Right(_))
 
-  implicit val int: BsonDecoder[Int] = BsonDecoder.instance {
-    case x: BsonInt32 => Right(x.getValue)
-    case _            => Left(BsonDecodeError("Expected BsonInt32"))
-  }
-
-  implicit val long: BsonDecoder[Long] = BsonDecoder.instance {
-    case x: BsonInt64 => Right(x.getValue)
-    case _            => Left(BsonDecodeError("Expected BsonInt64"))
-  }
-
-  implicit val string: BsonDecoder[String] = BsonDecoder.instance {
-    case x: BsonString => Right(x.getValue)
-    case _             => Left(BsonDecodeError("Expected BsonString"))
-  }
-
-  implicit val boolean: BsonDecoder[Boolean] = BsonDecoder.instance {
-    case x: BsonBoolean => Right(x.getValue)
-    case _              => Left(BsonDecodeError("Expected BsonBoolean"))
-  }
-
-  implicit val double: BsonDecoder[Double] = BsonDecoder.instance {
-    case x: BsonDouble => Right(x.getValue)
-    case _             => Left(BsonDecodeError("Expected BsonDouble"))
-  }
-
-  implicit val instant: BsonDecoder[Instant] = BsonDecoder.instance {
-    case x: BsonDateTime => Right(Instant.ofEpochMilli(x.getValue))
-    case _               => Left(BsonDecodeError("Expected BsonDateTime"))
-  }
-
   implicit val bsonArray: BsonDecoder[BsonArray] = BsonDecoder.instance {
     case x: BsonArray => Right(x)
     case _            => Left(BsonDecodeError("Expected BsonArray"))
@@ -216,9 +186,27 @@ object BsonDecoder {
   }
 
   implicit val bsonDocumentDecoder: BsonDecoder[BsonDocument] =
-    BsonDecoder.instance[BsonDocument] {
+    BsonDecoder.instance {
       case bd: BsonDocument => Right(bd)
-      case _                => Left(BsonDecodeError("Incorrect BsonDocument"))
+      case _                => Left(BsonDecodeError("Expected BsonDocument"))
     }
+
+  implicit val int: BsonDecoder[Int] =
+    bsonInt.map(_.getValue)
+
+  implicit val long: BsonDecoder[Long] =
+    bsonLong.map(_.getValue)
+
+  implicit val string: BsonDecoder[String] =
+    bsonString.map(_.getValue)
+
+  implicit val boolean: BsonDecoder[Boolean] =
+    bsonBoolean.map(_.getValue)
+
+  implicit val double: BsonDecoder[Double] =
+    bsonDouble.map(_.getValue)
+
+  implicit val instant: BsonDecoder[Instant] =
+    bsonDateTime.map(bdt => Instant.ofEpochMilli(bdt.getValue))
 
 }
