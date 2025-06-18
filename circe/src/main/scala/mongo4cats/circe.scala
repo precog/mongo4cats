@@ -39,31 +39,30 @@ object circe extends JsonCodecs {
   }
 
   object implicits {
-    implicit def circeEncoderToEncoder[A: Encoder]: BsonEncoder[A] = new BsonEncoder[A] {
-      def apply(a: A): BsonValue = {
-        val json = a.asJson
-        val wrapped = Json.obj(RootTag := json)
-        val bson = BsonDocument.parse(wrapped.noSpaces)
-        bson.get(RootTag)
+
+    implicit def circeEncoderToEncoder[A: Encoder]: BsonEncoder[A] =
+      jsonEncoder.contramap(_.asJson)
+
+    implicit def circeDecoderToDecoder[A: Decoder]: BsonDecoder[A] =
+      jsonDecoder.flatMap { json =>
+        Decoder
+          .instance[A](_.as[A])
+          .decodeJson(json)
+          .leftMap(x => BsonDecodeError(x.toString))
       }
+
+    implicit val jsonEncoder: BsonEncoder[Json] = BsonEncoder.instance { json =>
+      val wrapped = Json.obj(RootTag := json)
+      val bson = BsonDocument.parse(wrapped.noSpaces)
+      bson.get(RootTag)
     }
 
-    implicit def circeDecoderToDecoder[A: Decoder]: BsonDecoder[A] = new BsonDecoder[A] {
-
-      val decoder = Decoder.instance[A](_.as[A])
-
-      def apply(b: BsonValue) = {
-        val doc = BsonDocument(RootTag -> (if (b == null) new BsonNull else b)).toJson()
-        val json = parser.parse(doc)
-        val jsonWithoutRoot = json.flatMap(_.hcursor.get[Json](RootTag))
-        jsonWithoutRoot
-          .flatMap(decoder.decodeJson(_))
-          .leftMap(x =>
-            BsonDecodeError {
-              s"An error occured during decoding BsonValue ${b}: $x"
-            }
-          )
-      }
+    implicit val jsonDecoder: BsonDecoder[Json] = BsonDecoder.instance { b =>
+      val doc = BsonDocument(RootTag -> (if (b == null) new BsonNull else b)).toJson()
+      val json = parser.parse(doc)
+      val jsonWithoutRoot = json.flatMap(_.hcursor.get[Json](RootTag))
+      jsonWithoutRoot
+        .leftMap(x => BsonDecodeError(s"An error occured during decoding BsonValue ${b}: $x"))
     }
   }
 
