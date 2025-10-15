@@ -54,10 +54,6 @@ class MongoCollectionSpec extends AsyncWordSpec with Matchers with EmbeddedMongo
           _ <- db.createCollection("people")
           coll <- db.getCollection("people")
           _ <- coll.insertOne[Person](p)
-          filter = Filter.lt("dob", LocalDate.now()) && Filter.lt(
-            "registrationDate",
-            Instant.now()
-          )
           people <- coll.find.stream[Person].compile.to(List)
         } yield people
 
