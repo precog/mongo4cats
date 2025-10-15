@@ -3,7 +3,7 @@ import ReleaseTransformations._
 import microsites.CdnDirectives
 
 lazy val scala212               = "2.12.14"
-lazy val scala213               = "2.13.12"
+lazy val scala213               = "2.13.16"
 lazy val supportedScalaVersions = List(scala212, scala213)
 
 ThisBuild / scalaVersion           := scala213
@@ -45,7 +45,7 @@ lazy val noPublish = Seq(
 lazy val commonSettings = Seq(
   organizationName := "MongoDB Java client wrapper for Cats-Effect & FS2",
   startYear        := Some(2020),
-  licenses += ("Apache-2.0", new URL("https://www.apache.org/licenses/LICENSE-2.0.txt")),
+  licenses += ("Apache-2.0", new URI("https://www.apache.org/licenses/LICENSE-2.0.txt").toURL),
   headerLicense := Some(HeaderLicense.ALv2("2020", "Kirill5k")),
   resolvers += "Apache public" at "https://repository.apache.org/content/groups/public/",
   scalafmtOnCompile  := true,
@@ -63,6 +63,7 @@ lazy val root = project
     crossScalaVersions := Nil
   )
   .aggregate(
+    bson,
     core,
     circe,
     examples,
@@ -70,9 +71,18 @@ lazy val root = project
     testkit
   )
 
+lazy val bson = project
+  .in(file("bson"))
+  .settings(commonSettings)
+  .settings(
+    name := "mongo4cats-bson",
+    libraryDependencies ++= Dependencies.bson ++ Dependencies.test,
+    test / parallelExecution := false)
+  .enablePlugins(AutomateHeaderPlugin)
+
 lazy val core = project
   .in(file("core"))
-  .dependsOn(embedded % "test->compile")
+  .dependsOn(bson, embedded % "test->compile")
   .settings(commonSettings)
   .settings(
     name := "mongo4cats-core",

@@ -3,10 +3,11 @@ import sbt._
 object Dependencies {
   private object Versions {
     val mongodb     = "4.11.1"
-    val fs2         = "3.10.2"
+    val fs2         = "3.11.0"
     val scalaCompat = "2.6.0"
     val circe       = "0.14.6"
     val findbugsJsr305Version = "1.3.9"
+    val cats = "2.11.0"
 
     val logback   = "1.2.10"
     val scalaTest = "3.2.10"
@@ -25,6 +26,8 @@ object Dependencies {
     val mongodbDriverSync    = "org.mongodb" % "mongodb-driver-sync"            % Versions.mongodb
     val findbugsJsr305Version = "com.google.code.findbugs" % "jsr305" % Versions.findbugsJsr305Version % Provided
 
+    val catsCore = "org.typelevel" %% "cats-core" % Versions.cats
+
     val fs2Core     = "co.fs2"                 %% "fs2-core"                % Versions.fs2
     val scalaCompat = "org.scala-lang.modules" %% "scala-collection-compat" % Versions.scalaCompat
 
@@ -42,6 +45,12 @@ object Dependencies {
     val commonsCompress = "org.apache.commons"  % "commons-compress"          % Versions.commonsCompress
 
   }
+
+  lazy val bson = Seq(
+    Libraries.catsCore,
+    Libraries.mongodbBson,
+    Libraries.scalaCompat
+  )
 
   lazy val core = Seq(
     Libraries.mongodbBson,
