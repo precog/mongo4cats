@@ -22,10 +22,34 @@ import org.bson.BsonString
 import io.circe.Decoder
 import org.scalatest.EitherValues
 import io.circe.DecodingFailure
+import org.bson.BsonBoolean
+import mongo4cats.bson.BsonDocument
+import io.circe.Json
+import mongo4cats.bson.BsonDecoder
+import io.circe.JsonObject
 
 class CirceSpec extends AnyWordSpec with Matchers with EitherValues {
 
   "circe conversions" should {
+
+    "decode a bson document as a json object" in {
+      import circe.implicits._
+
+      val bson = BsonDocument("a" -> new BsonString("b"), "c" -> new BsonBoolean(false))
+      val json = JsonObject("a" -> Json.fromString("b"), "c" -> Json.False).toJson
+
+      BsonDecoder[Json].apply(bson) shouldBe Right(json)
+    }
+
+    "decode a bson literal as a json literal" in {
+      import circe.implicits._
+
+      val bson = new BsonString("hello there")
+      val json = Json.fromString("hello there")
+
+      BsonDecoder[Json].apply(bson) shouldBe Right(json)
+    }
+
     "decode null as if it was Json.null" in {
       circe.implicits
         .circeDecoderToDecoder[Unit](Decoder.instance { c =>
@@ -41,7 +65,7 @@ class CirceSpec extends AnyWordSpec with Matchers with EitherValues {
 
       val res = circe.implicits.circeDecoderToDecoder[String](deco).apply(new BsonString("hek"))
 
-      res.left.value.msg shouldBe "An error occured during decoding BsonValue BsonString{value='hek'}: DecodingFailure at .hek: Missing required field"
+      res.left.value.msg shouldBe "DecodingFailure at .hek: Missing required field"
 
     }
   }
