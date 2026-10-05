@@ -2,21 +2,27 @@ import xerial.sbt.Sonatype.GitHubHosting
 import ReleaseTransformations._
 import microsites.CdnDirectives
 
-lazy val scala212               = "2.12.14"
-lazy val scala213               = "2.13.16"
-lazy val supportedScalaVersions = List(scala212, scala213)
+lazy val scala213 = "2.13.16"
+lazy val scala3 = "3.3.6"
+lazy val supportedScalaVersions = List(scala213, scala3)
 
-ThisBuild / scalaVersion           := scala213
-ThisBuild / organization           := "com.precog"
-ThisBuild / homepage               := Some(url("https://kirill5k.github.io/mongo4cats"))
-ThisBuild / scmInfo                := Some(ScmInfo(url("https://github.com/precog/mongo4cats"), "git@github.com:precog/mongo4cats.git"))
-ThisBuild / developers             := List(Developer("kirill5k", "Kirill", "immotional@aol.com", url("https://github.com/kirill5k")))
-ThisBuild / licenses               := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0"))
-ThisBuild / sonatypeProjectHosting := Some(GitHubHosting("precog", "mongo4cats", "bot@precog.com"))
-ThisBuild / publishTo              := sonatypePublishToBundle.value
+ThisBuild / scalaVersion := scala213
+ThisBuild / organization := "com.precog"
+ThisBuild / homepage := Some(url("https://kirill5k.github.io/mongo4cats"))
+ThisBuild / scmInfo := Some(
+  ScmInfo(url("https://github.com/precog/mongo4cats"), "git@github.com:precog/mongo4cats.git")
+)
+ThisBuild / developers := List(
+  Developer("kirill5k", "Kirill", "immotional@aol.com", url("https://github.com/kirill5k"))
+)
+ThisBuild / licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0"))
+ThisBuild / sonatypeProjectHosting := Some(
+  GitHubHosting("precog", "mongo4cats", "bot@precog.com")
+)
+ThisBuild / publishTo := sonatypePublishToBundle.value
 ThisBuild / githubWorkflowPublishTargetBranches := Nil
-ThisBuild / githubWorkflowScalaVersions         := supportedScalaVersions
-ThisBuild / githubWorkflowJavaVersions          := Seq(JavaSpec(JavaSpec.Distribution.Corretto, "17"))
+ThisBuild / githubWorkflowScalaVersions := supportedScalaVersions
+ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec(JavaSpec.Distribution.Corretto, "17"))
 ThisBuild / githubOwner := "precog"
 ThisBuild / githubRepository := "mongo4cats"
 
@@ -36,19 +42,19 @@ releaseProcess := Seq[ReleaseStep](
 )
 
 lazy val noPublish = Seq(
-  publish         := {},
-  publishLocal    := {},
+  publish := {},
+  publishLocal := {},
   publishArtifact := false,
-  publish / skip  := true
+  publish / skip := true
 )
 
 lazy val commonSettings = Seq(
   organizationName := "MongoDB Java client wrapper for Cats-Effect & FS2",
-  startYear        := Some(2020),
+  startYear := Some(2020),
   licenses += ("Apache-2.0", new URI("https://www.apache.org/licenses/LICENSE-2.0.txt").toURL),
   headerLicense := Some(HeaderLicense.ALv2("2020", "Kirill5k")),
   resolvers += "Apache public" at "https://repository.apache.org/content/groups/public/",
-  scalafmtOnCompile  := true,
+  scalafmtOnCompile := true,
   crossScalaVersions := supportedScalaVersions,
   Compile / doc / scalacOptions ++= Seq(
     "-no-link-warnings" // Suppresses problems with Scaladoc links
@@ -59,7 +65,7 @@ lazy val root = project
   .in(file("."))
   .settings(noPublish)
   .settings(
-    name               := "mongo4cats",
+    name := "mongo4cats",
     crossScalaVersions := Nil
   )
   .aggregate(
@@ -77,7 +83,8 @@ lazy val bson = project
   .settings(
     name := "mongo4cats-bson",
     libraryDependencies ++= Dependencies.bson ++ Dependencies.test,
-    test / parallelExecution := false)
+    test / parallelExecution := false
+  )
   .enablePlugins(AutomateHeaderPlugin)
 
 lazy val core = project
@@ -87,7 +94,8 @@ lazy val core = project
   .settings(
     name := "mongo4cats-core",
     libraryDependencies ++= Dependencies.core ++ Dependencies.test,
-    test / parallelExecution := false)
+    test / parallelExecution := false
+  )
   .enablePlugins(AutomateHeaderPlugin)
 
 lazy val circe = project
@@ -98,7 +106,7 @@ lazy val circe = project
     name := "mongo4cats-circe",
     libraryDependencies ++= Dependencies.circe ++ Dependencies.test,
     test / parallelExecution := false,
-    mimaPreviousArtifacts    := Set(organization.value %% moduleName.value % "0.4.1")
+    mimaPreviousArtifacts := Set(organization.value %% moduleName.value % "0.4.1")
   )
   .enablePlugins(AutomateHeaderPlugin)
 
@@ -120,7 +128,7 @@ lazy val embedded = project
     name := "mongo4cats-embedded",
     libraryDependencies ++= Dependencies.embedded,
     test / parallelExecution := false,
-    mimaPreviousArtifacts    := Set(organization.value %% moduleName.value % "0.4.1")
+    mimaPreviousArtifacts := Set(organization.value %% moduleName.value % "0.4.1")
   )
   .enablePlugins(AutomateHeaderPlugin)
 
@@ -129,7 +137,7 @@ lazy val testkit = project
   .settings(commonSettings)
   .settings(
     name := "mongo4cats-testkit",
-    libraryDependencies ++= Dependencies.testkit,
+    libraryDependencies ++= Dependencies.testkit
   )
   .dependsOn(core)
   .enablePlugins(AutomateHeaderPlugin)
