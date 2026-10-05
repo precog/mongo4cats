@@ -3,7 +3,7 @@ import ReleaseTransformations._
 import microsites.CdnDirectives
 
 lazy val scala213 = "2.13.16"
-lazy val scala3 = "3.3.6"
+lazy val scala3 = "3.3.8"
 lazy val supportedScalaVersions = List(scala213, scala3)
 
 ThisBuild / scalaVersion := scala213
